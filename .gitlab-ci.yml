@@ -1,0 +1,32 @@
+stages:
+  - build
+
+variables:
+  BUILDKITD_FLAGS: --oci-worker-no-process-sandbox
+  IMAGE_TAG: "${CI_COMMIT_SHORT_SHA}"
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "web"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH
+    - if: $CI_COMMIT_TAG
+
+include:
+  - local: .gitlab-ci/build-job.yaml
+    inputs:
+      image_name: ansible
+  - local: .gitlab-ci/build-job.yaml
+    inputs:
+      image_name: helmfile
+  - local: .gitlab-ci/build-job.yaml
+    inputs:
+      image_name: terraform
+  - local: .gitlab-ci/build-job.yaml
+    inputs:
+      image_name: cr-cleanup-python
+  - local: .gitlab-ci/build-job.yaml
+    inputs:
+      image_name: helm
