@@ -11,10 +11,12 @@ USER 10001
 WORKDIR /workspace
 
 RUN curl -sL https://github.com/databus23.gpg | gpg --import \
-    && gpg --list-keys --with-fingerprint EA17A2A206AFF8CD
+    && curl -sL https://github.com/jkroepke.gpg | gpg --import \
+    && gpg --export --output /workspace/.gnupg/pubring.gpg \
+    && gpg --list-keys --with-fingerprint
 
-RUN helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets:4.7.4 \
+RUN helm plugin install https://github.com/jkroepke/helm-secrets/releases/download/v4.7.4/secrets-4.7.4.tgz \
     && helm plugin install https://github.com/databus23/helm-diff/releases/latest/download/helm-diff-linux-amd64.tgz \
-    && helm plugin install https://github.com/aslafy-z/helm-git --version 1.5.2
+    && helm plugin install https://github.com/aslafy-z/helm-git --version 1.5.2 --verify=false
 
 ENTRYPOINT []
