@@ -1,31 +1,20 @@
-ARG ALPINE_VERSION=3.23
+FROM alpine/helm:4.2.1@sha256:8647f126de3578d74f947ba735e4cfa0ea6aea7d6e2f36bceb86f31415944dca
 
-# kubectl, helm, etc..
-# based on: https://github.com/dtzar/helm-kubectl/blob/main/Dockerfile
-FROM alpine:${ALPINE_VERSION}
+RUN apk add --no-cache git gnupg curl \
+    && addgroup -g 10001 helm \
+    && adduser -D -H -u 10001 -G helm helm \
+    && mkdir -p /workspace \
+    && chown helm:helm /workspace
 
-ARG TARGETOS=linux
-ARG TARGETARCH=amd64
-ARG KUBE_VERSION=1.35.1
-ARG HELM_VERSION=4.1.1
-ARG HELM_DIFF_VERSION=3.15.0
-ARG STERN_VERSION=1.33.1
+ENV HOME=/workspace
+USER 10001
+WORKDIR /workspace
 
-RUN apk -U upgrade \
-    && apk add --no-cache ca-certificates bash git curl gettext jq coreutils \
-    && wget -q https://dl.k8s.io/release/v${KUBE_VERSION}/bin/${TARGETOS}/${TARGETARCH}/kubectl -O /usr/local/bin/kubectl \
-    && wget -q https://get.helm.sh/helm-v${HELM_VERSION}-${TARGETOS}-${TARGETARCH}.tar.gz -O - | tar -xzO ${TARGETOS}-${TARGETARCH}/helm > /usr/local/bin/helm \
-    && wget https://github.com/stern/stern/releases/download/v${STERN_VERSION}/stern_${STERN_VERSION}_${TARGETOS}_${TARGETARCH}.tar.gz -O - | tar -xzO stern > /usr/local/bin/stern \
-    && chmod +x /usr/local/bin/helm /usr/local/bin/kubectl /usr/local/bin/stern \
-    && helm plugin install --verify=false --version ${HELM_DIFF_VERSION} https://github.com/databus23/helm-diff \
-    && mkdir /config \
-    && chmod g+rwx /config /root \
-    && kubectl version --client \
-    && helm version \
-    && helm plugin list | grep -E 'diff' \
-    && stern --version \
-    && uname -a
+RUN curl -sL https://github.com/databus23.gpg | gpg --import \
+    && gpg --list-keys --with-fingerprint EA17A2A206AFF8CD
 
-WORKDIR /config
+RUN helm plugin install oci://ghcr.io/jkroepke/helm-secrets/secrets:4.7.4 \
+    && helm plugin install https://github.com/databus23/helm-diff/releases/latest/download/helm-diff-linux-amd64.tgz \
+    && helm plugin install https://github.com/aslafy-z/helm-git --version 1.5.2
 
-CMD ["bash"]
+ENTRYPOINT []
