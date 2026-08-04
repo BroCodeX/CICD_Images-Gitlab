@@ -1,4 +1,4 @@
-FROM hashicorp/terraform:1.15.7@sha256:40e61a86763083ea987ded0ffa15f6d75e0df48ed16275811f949b3ecbcd8aae
+FROM hashicorp/terraform:1.15.8@sha256:8207a3cae11633e1182b94698adf46fdaf55a848e3d0ff151139729773568494
 
 RUN addgroup -g 10001 terraform \
     && adduser -D -H -u 10001 -G terraform terraform \
