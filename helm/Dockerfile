@@ -1,4 +1,4 @@
-FROM alpine/helm:4.2.1@sha256:8647f126de3578d74f947ba735e4cfa0ea6aea7d6e2f36bceb86f31415944dca
+FROM alpine/helm:4.2.3@sha256:1338539a80db7f323def261f36d4a85ee39ecf5e714e532c7b2f8445404eef52
 
 RUN apk add --no-cache git gnupg curl \
     && addgroup -g 10001 helm \
