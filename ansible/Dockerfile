@@ -1,11 +1,11 @@
-FROM alpine:3.22
+FROM alpine:3.23.5@sha256:1beb0dc0a51de7ff38e3b5274078a2e0b81113ba5c7535e1a03d5913a5edbda3
 
 ARG ANSIBLE_VERSION=11.5.0
 ARG UID=10001
 
 LABEL org.opencontainers.image.title="ansible-image" \
       org.opencontainers.image.description="Deploy ansible image" \
-      org.opencontainers.image.base.name="alpine:3.22"
+      org.opencontainers.image.base.name="alpine:3.23.5"
 
 ENV VIRTUAL_ENV=/.venv \
     PYTHONDONTWRITEBYTECODE=1 \
