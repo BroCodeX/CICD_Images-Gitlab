@@ -1,0 +1,15 @@
+spec:
+  inputs:
+    image_name:
+      description: "Image name; also the directory in the repo with its Dockerfile (e.g. 'ansible')"
+      type: string
+---
+
+include:
+  - component: $CI_SERVER_FQDN/components/build/buildchain@1
+    inputs:
+      image_name: $[[ inputs.image_name ]]
+      context: $[[ inputs.image_name ]]
+      dockerfile_dir: $[[ inputs.image_name ]]
+      dockerfile_name: Dockerfile
+      push_to_latest: true
