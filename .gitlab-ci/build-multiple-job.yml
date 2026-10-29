@@ -3,6 +3,11 @@ spec:
     image_name:
       description: "Image name; also the directory in the repo with its Dockerfile (e.g. 'ansible')"
       type: string
+    runner_tags:
+      description: "GitLab runner tags"
+      type: array
+      default:
+        - docker_infra
 ---
 
 include:
